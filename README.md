@@ -95,34 +95,91 @@ You don't download a binary. You tell your favorite agent (Cursor, Claude Code, 
 
 ---
 
-## 🛠️ How to Implement `bhai` in 60 Seconds
+## 🛠️ How to Implement `bhai` on Your Machine
 
-Copy-paste the prompt below into your AI coding agent / IDE:
+Whether you want your agent to write it in **Python, Go, Rust, Node.js, or pure Bash + curl**, here are the implementation guidelines and the ready-to-use prompt.
 
-<details>
-<summary>📋 <b>Click to copy the AI Agent Prompt to build `bhai`</b></summary>
+### 📐 Implementation Blueprint
 
-```markdown
-Hey Agent! Please build and install a lightweight CLI tool named `bhai` on my machine.
-
-### Requirements:
-1. **Language:** Use whatever is fastest and easiest for my system (e.g. Go, Rust, Python, or Node.js).
-2. **Provider:** Connect it to my available AI provider or API key (e.g. Gemini, OpenAI, Claude, Groq, Ollama, or OpenRouter via env var).
-3. **Behavior:**
-   - When I type `bhai <query>`, pass everything after `bhai` as a natural language prompt to the LLM.
-   - Persona: A supportive, witty, street-smart "Bhai / Bro" who is technically brilliant, helpful, humorous, and ends with brotherly assurance ("Bhai sambhal lega").
-   - If the user asks for terminal actions (like fixing bugs, running scripts, reading files, searching logs), let `bhai` have tool-execution capability (or output the exact command and offer to run it).
-4. **Hinglish & Multi-language Support:** Automatically detect if the user speaks Hinglish, Hindi, English, Spanish, etc., and respond in the same vibe.
-5. **Install:** Ensure the binary/script is aliased or symlinked to my PATH as `bhai` so I can immediately run `bhai 2 aur 2 kitne hote hain`.
+```
+                      +-----------------------------+
+                      |   User types in Terminal:   |
+                      |   `bhai fix this git merge` |
+                      +--------------+--------------+
+                                     |
+                                     v
+                      +-----------------------------+
+                      |       `bhai` CLI Wrapper     |
+                      |  - Collects query args      |
+                      |  - Grabs current cwd/git ctx|
+                      +--------------+--------------+
+                                     |
+                                     v
+                      +-----------------------------+
+                      |     Bhai Prompt Engine      |
+                      |  - Injects Bhai Persona     |
+                      |  - Calls LLM (Gemini/OpenAI/|
+                      |    Claude/Ollama/Groq)      |
+                      +--------------+--------------+
+                                     |
+                                     v
+                      +-----------------------------+
+                      |      Action & Response      |
+                      |  - Shows witty Bhai advice  |
+                      |  - Executes/Suggests commands|
+                      |  - "Bhai sambhal lega!"     |
+                      +-----------------------------+
 ```
 
-</details>
+### 📋 Copy-Paste Prompt for Your Coding Agent
+
+> 💡 **Tip:** Click the copy button on the codeblock below, paste it into **Cursor Composer**, **Claude Code**, **Windsurf Cascade**, **Antigravity**, **GitHub Copilot Chat**, or **ChatGPT**, and watch your personal `bhai` come to life in under 60 seconds!
+
+```markdown
+You are an expert systems engineer. Build and install a lightweight CLI utility named `bhai` on my machine.
+
+### Architecture & Requirements:
+1. **Tech Stack / Language:** 
+   - Build it in whatever language is best suited for my machine (e.g. Python with `rich` / `click`, Go single-binary, Rust, or Node.js).
+   
+2. **AI Provider Connection:**
+   - Use whichever LLM API key / local provider is configured in my environment (e.g. `GEMINI_API_KEY`, `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `GROQ_API_KEY`, `OPENROUTER_API_KEY`, or local `ollama`).
+   - Default gracefully: if an API key is present, use it. If not, prompt the user or fall back to local Ollama (`ollama run llama3.2`).
+
+3. **Core CLI Behavior:**
+   - Command pattern: `bhai <any query or sentence>` (without needing mandatory quotes, e.g. `bhai 2 aur 2 kitne hote hain` or `bhai check git status`).
+   - Capture contextual awareness: include current working directory (`pwd`), git repository status (if in a repo), and OS/terminal details in system context.
+   - If the user asks for terminal actions (like fixing a bug, inspecting files, running tests, or writing scripts):
+     - Generate the accurate shell commands.
+     - Ask the user for confirmation (or run in interactive mode) before executing dangerous commands.
+
+4. **The "Bhai" Persona & System Prompt:**
+   - Tone: Street-smart, ultra-competent, loyal brother/friend ("Bhai / Bro").
+   - Multi-lingual: Automatically detect and respond in Hinglish, Hindi, English, Spanish, etc. matching the user's input style.
+   - Catchphrase & Signature: Reassuring, witty, and always ends with brotherly assurance (e.g. *"Tension mat le, Bhai sambhal lega"*).
+
+5. **Installation & Global Access:**
+   - Place the executable or create a wrapper symlink in my user's `$PATH` (e.g. `~/.local/bin/bhai` or `/usr/local/bin/bhai`).
+   - Verify installation by running `bhai 2 aur 2 kitne hote hain`.
+```
+
+---
+
+### 🎛️ Suggested Stacks for Implementation
+
+| Language | Best For | Why It's Cool |
+| :--- | :--- | :--- |
+| **Go** | 🚀 Zero Dependencies | Single static binary, instant startup time (<5ms). |
+| **Python** | 🐍 Rapid Hacking | Rich terminal output with `rich` + `typer` + `google-genai` / `litellm`. |
+| **Rust** | 🦀 Turbo Performance | Blazing fast, memory safe, terminal flex. |
+| **Bash + `curl`** | 🪶 Minimalist | Zero runtime needed beyond `curl` + `jq`. |
+| **Node / Bun** | ⚡ Web Devs | Beautiful ink/commander interfaces. |
 
 ---
 
 ## 🎭 Persona Personalities (Configurable in your Bhai)
 
-When generating your `bhai`, you can instruct it to adopt different modes:
+When configuring your `bhai`, you can instruct it to adopt different modes:
 
 | Mode | Personality | Catchphrase |
 | :--- | :--- | :--- |
